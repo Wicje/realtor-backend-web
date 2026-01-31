@@ -1,0 +1,6 @@
+Waiting for server...
+Server reachable. Running e2e tests...
+SIGNUP: 201 {"message":"Realtor account created","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjkzN2Y4My0yZjlhLTRjMzctOGU4NS1kZDVhZTY5NTAxNDIiLCJyb2xlIjoiUkVBTFRPUiIsImlhdCI6MTc2OTg5Njk1NSwiZXhwIjoxNzY5OTgzMzU1fQ.KHA4roZwG2pmexssihScRZ7tvKXciEI6pUOum4hXobE","user":{"id":"12937f83-2f9a-4c37-8e85-dd5ae6950142","email":"e2e+1769896955088@example.com","role":"REALTOR"}}
+CREATE LISTING: 201 {"id":"abc20818-987e-488d-9671-e30236ff0b5a","realtorId":"12937f83-2f9a-4c37-8e85-dd5ae6950142","title":"E2E Test","description":"desc","price":123,"createdAt":"2026-01-31T22:02:35.213Z"}
+MY LISTINGS: 200 [{"id":"abc20818-987e-488d-9671-e30236ff0b5a","realtorId":"12937f83-2f9a-4c37-8e85-dd5ae6950142","title":"E2E Test","description":"desc","price":123,"createdAt":"2026-01-31T22:02:35.213Z"}]
+E2E tests completed
