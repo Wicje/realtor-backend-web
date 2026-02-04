@@ -1,10 +1,12 @@
-export type Role = "REALTOR"; // for now, we only have one type
+export type Role = "REALTOR";
+export type Plan = "FREE" | "BASIC" | "PRO";
 
 export interface User {
-  id: string;        // unique identifier
+  id: string;
   email: string;
   passwordHash: string;
   role: Role;
+  plan: Plan;
   createdAt: Date;
 }
 
