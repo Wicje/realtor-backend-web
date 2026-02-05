@@ -18,6 +18,7 @@ export const signupService = async (email: string, password: string) => {
     id: randomUUID(),
     email,
     passwordHash,
+    plan: "FREE",
     role: "REALTOR",
     createdAt: new Date(),
   };
