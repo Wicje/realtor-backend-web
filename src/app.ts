@@ -8,16 +8,25 @@ dotenv.config();
 
 const app = express();
 
-// Middleware to parse JSON
+/**
+ * Core middlewares
+ * These run on EVERY request
+ */
+app.use(cors());
 app.use(express.json());
-app.get("/ping", (req, res) => {
-  console.log("Ping route hit");
-  res.send("pong");
+app.use(morgan("dev"));
+
+/**
+ * Health check
+ * Lets you know the server is alive
+ */
+app.get("/health", (_, res) => {
+  res.json({ status: "ok" });
 });
 
 // Mount auth routes
 app.use("/auth", authRoutes);
 app.use("/listings", listingsRoutes);
-
+app.use("/leads", leadRoutes);
 export default app;
  
