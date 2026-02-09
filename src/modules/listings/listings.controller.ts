@@ -1,27 +1,26 @@
+
 import { Request, Response } from "express";
 import { createProperty, getMyProperties } from "./listings.service";
+import { createPropertySchema } from "./listings.validator";
 
-export const createListing = (req: Request, res: Response) => {
-  const user = (req as any).user;
+export const createListing = async (req: Request, res: Response) => {
+  try {
+    const user = (req as any).user;
 
-  const { title, description, price } = req.body;
+    const data = createPropertySchema.parse(req.body);
 
-  if (!title || !price) {
-    return res.status(400).json({ error: "Missing required fields" });
+    const property = await createProperty(user.userId, data);
+
+    res.status(201).json(property);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
   }
-
-  const property = createProperty(user.userId, {
-    title,
-    description,
-    price,
-  });
-
-  res.status(201).json(property);
 };
 
-export const myListings = (req: Request, res: Response) => {
+export const myListings = async (req: Request, res: Response) => {
   const user = (req as any).user;
-  const listings = getMyProperties(user.userId);
+
+  const listings = await getMyProperties(user.userId);
 
   res.json(listings);
 };

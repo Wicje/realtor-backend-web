@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { getPropertyById } from "../modules/listings/listings.service";
 
-export const requirePropertyOwner = (
+
+export const requirePropertyOwner = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -9,7 +10,7 @@ export const requirePropertyOwner = (
   const user = (req as any).user;
   const propertyId = req.params.id;
 
-  const property = getPropertyById(propertyId);
+  const property = await getPropertyById(propertyId);
 
   if (!property) {
     return res.status(404).json({ error: "Property not found" });

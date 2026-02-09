@@ -1,31 +1,44 @@
-import { Property } from "./listings.types";
-import { randomUUID } from "crypto";
 
-// MVP in-memory store
-const properties: Property[] = [];
+import { prisma } from "../../config/db";
 
-export const createProperty = (
+interface CreatePropertyInput {
+  title: string;
+  description: string;
+  type: any;
+  size: string;
+  furnished: boolean;
+  price: number;
+  priceMode: any;
+  state: string;
+  city: string;
+  street: string;
+  images: string[];
+}
+
+export const createProperty = async (
   realtorId: string,
-  data: Omit<Property, "id" | "realtorId" | "createdAt">
+  data: CreatePropertyInput
 ) => {
-  const property: Property = {
-    id: randomUUID(),
-    realtorId,
-    title: data.title,
-    description: data.description,
-    price: data.price,
-    createdAt: new Date(),
-  };
-
-  properties.push(property);
-  return property;
+  return prisma.property.create({
+    data: {
+      ...data,
+      realtorId,
+      visitors: 0,
+      totalLeads: 0,
+    },
+  });
 };
 
-export const getMyProperties = (realtorId: string) => {
-  return properties.filter(p => p.realtorId === realtorId);
+export const getMyProperties = async (realtorId: string) => {
+  return prisma.property.findMany({
+    where: { realtorId },
+    orderBy: { createdAt: "desc" },
+  });
 };
 
-export const getPropertyById = (id: string) => {
-  return properties.find(p => p.id === id);
+export const getPropertyById = async (id: string) => {
+  return prisma.property.findUnique({
+    where: { id },
+  });
 };
 

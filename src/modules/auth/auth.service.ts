@@ -2,39 +2,44 @@ import { User } from "./auth.types";
 import { hashPassword, comparePassword } from "../../utils/hash";
 import { generateToken } from "../../utils/token";
 import { randomUUID } from "crypto";
+import { prisma } from "../../config/db";
 
-// Temporary in-memory store (MVP ONLY)
-const users: User[] = [];
 
 export const signupService = async (email: string, password: string) => {
-  const existingUser = users.find(u => u.email === email);
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
+  });
+
   if (existingUser) {
     throw new Error("User already exists");
   }
 
   const passwordHash = await hashPassword(password);
 
-  const user: User = {
-    id: randomUUID(),
-    email,
-    passwordHash,
-    plan: "FREE",
-    role: "REALTOR",
-    createdAt: new Date(),
-  };
-
-  users.push(user);
+  const user = await prisma.user.create({
+    data: {
+      email,
+      passwordHash,
+      role: "REALTOR",
+      plan: "FREE",
+    },
+  });
 
   const token = generateToken({
     userId: user.id,
     role: user.role,
+    plan: user.plan,
   });
 
   return { user, token };
 };
 
+
 export const loginService = async (email: string, password: string) => {
-  const user = users.find(u => u.email === email);
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
   if (!user) {
     throw new Error("Invalid credentials");
   }
@@ -47,6 +52,7 @@ export const loginService = async (email: string, password: string) => {
   const token = generateToken({
     userId: user.id,
     role: user.role,
+    plan: user.plan,
   });
 
   return { user, token };

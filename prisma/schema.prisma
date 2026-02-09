@@ -5,10 +5,69 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
+
+enum Role {
+  REALTOR
+}
+
+enum Plan {
+  FREE
+  BASIC
+  PRO
+}
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  passwordHash String
+  role         Role
+  plan         Plan
+  createdAt    DateTime   @default(now())
+
+  properties   Property[]
+}
+
+
+model Property {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  type        PropertyType
+  size        String
+  furnished   Boolean
+  price       Int
+  priceMode   PriceMode
+  state       String
+  city        String
+  street      String
+  images      String[] // array of URLs
+  visitors    Int      @default(0)
+  totalLeads  Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  realtor     User     @relation(fields: [realtorId], references: [id])
+  realtorId   String
+}
+
+enum PropertyType {
+  SHOP
+  RESIDENTIAL
+  WAREHOUSE
+  DUPLEX
+  BUNGALOW
+  LAND
+}
+
+enum PriceMode {
+  RENT
+  LEASE
+  ONE_TIME
+}
+
