@@ -111,3 +111,33 @@ model PropertyVisibility {
 
   @@unique([propertyId, phone])
 }
+
+
+model Conversation {
+  id           String    @id @default(uuid())
+  propertyId   String
+  realtorId    String
+  clientPhone  String
+  createdAt    DateTime  @default(now())
+
+  property     Property  @relation(fields: [propertyId], references: [id])
+  realtor      Realtor   @relation(fields: [realtorId], references: [id])
+  messages     Message[]
+
+  @@unique([propertyId, clientPhone])
+}
+
+model Message {
+  id             String        @id @default(uuid())
+  conversationId String
+  senderType     SenderType
+  content        String
+  createdAt      DateTime      @default(now())
+
+  conversation   Conversation  @relation(fields: [conversationId], references: [id])
+}
+
+enum SenderType {
+  REALTOR
+  CLIENT
+}
