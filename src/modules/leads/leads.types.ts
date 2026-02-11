@@ -1,4 +1,3 @@
-
 export interface Lead {
   id: string;
   realtorId: string;

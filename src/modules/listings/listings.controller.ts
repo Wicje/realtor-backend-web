@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 import { createProperty, getMyProperties } from "./listings.service";
 import { createPropertySchema } from "./listings.validator";
+import { trackEvent } from "../analytics/analytics.service";
 
 export const createListing = async (req: Request, res: Response) => {
   try {
@@ -21,6 +22,8 @@ export const myListings = async (req: Request, res: Response) => {
   const user = (req as any).user;
 
   const listings = await getMyProperties(user.userId);
+
+  await trackEvent("VISIT", property.realtorId, property.id); //i have to confirm if this is when it is meant to be for analytics.service
 
   res.json(listings);
 };

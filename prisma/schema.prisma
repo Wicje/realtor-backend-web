@@ -54,6 +54,7 @@ model Property {
 
   realtor     User     @relation(fields: [realtorId], references: [id])
   realtorId   String
+ visibility    PropertyVisibility[]
 }
 
 enum PropertyType {
@@ -84,4 +85,29 @@ model Lead {
   property        Property @relation(fields: [propertyId], references: [id])
 
   createdAt       DateTime @default(now())
+}
+
+
+model AnalyticsEvent {
+  id         String   @id @default(uuid())
+  type       String
+
+  realtorId  String
+  propertyId String?
+
+  realtor    User     @relation(fields: [realtorId], references: [id])
+  property   Property? @relation(fields: [propertyId], references: [id])
+
+  createdAt  DateTime @default(now())
+}
+
+
+model PropertyVisibility {
+  id          String   @id @default(uuid())
+  propertyId  String
+  phone       String   // client phone number
+
+  property    Property @relation(fields: [propertyId], references: [id])
+
+  @@unique([propertyId, phone])
 }

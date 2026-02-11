@@ -2,7 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./modules/auth/auth.route";
 import listingsRoutes from "./modules/listings/listings.route"
-
+import leadRoutes from "./modules/leads/leads.routes";
+import analyticsRoutes from "./modules/analytics/analytics.routes";
+import otpRoutes from "./modules/otp/otp.routes";
 // Load environment variables
 dotenv.config();
 
@@ -28,5 +30,7 @@ app.get("/health", (_, res) => {
 app.use("/auth", authRoutes);
 app.use("/listings", listingsRoutes);
 app.use("/leads", leadRoutes);
+app.use("/analytics", analyticsRoutes);
+app.use("/otp", otpRoutes);
 export default app;
  
