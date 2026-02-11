@@ -71,3 +71,17 @@ enum PriceMode {
   ONE_TIME
 }
 
+model Lead {
+  id              String   @id @default(uuid())
+  phone           String
+  message         String
+  isPhoneVerified Boolean  @default(false)
+
+  realtorId       String
+  propertyId      String
+
+  realtor         User     @relation(fields: [realtorId], references: [id])
+  property        Property @relation(fields: [propertyId], references: [id])
+
+  createdAt       DateTime @default(now())
+}
