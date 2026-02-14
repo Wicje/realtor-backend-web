@@ -7,6 +7,8 @@ export const signup = async (req: Request, res: Response) => {
     const data = signupSchema.parse(req.body);
     const result = await signupService(data.email, data.password);
 
+    const slug = email.split("@")[0] + "-" + Date.now(); ///this slug should be moved i think
+
     res.status(201).json({
       message: "Realtor account created",
       token: result.token,

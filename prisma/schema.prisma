@@ -51,10 +51,12 @@ model Property {
   visitors    Int      @default(0)
   totalLeads  Int      @default(0)
   createdAt   DateTime @default(now())
-
+  isPublic    Boolean  @default(false)   // 👈 ADD
+  isFeatured  Boolean  @default(false)  
   realtor     User     @relation(fields: [realtorId], references: [id])
   realtorId   String
  visibility    PropertyVisibility[]
+  featuredLinks FeaturedLink[]
 }
 
 enum PropertyType {
@@ -140,4 +142,14 @@ model Message {
 enum SenderType {
   REALTOR
   CLIENT
+}
+
+
+model FeaturedLink {
+  id          String   @id @default(uuid())
+  token       String   @unique
+  realtorId   String
+  realtor     User     @relation(fields: [realtorId], references: [id])
+  properties  Property[]
+  createdAt   DateTime @default(now())
 }
