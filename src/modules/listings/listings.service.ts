@@ -1,5 +1,5 @@
-
 import { prisma } from "../../config/db";
+import cloudinary from "../config/cloudinary";
 
 interface CreatePropertyInput {
   title: string;
@@ -15,18 +15,24 @@ interface CreatePropertyInput {
   images: string[];
 }
 
-export const createProperty = async (
-  realtorId: string,
-  data: CreatePropertyInput
-) => {
-  return prisma.property.create({
-    data: {
-      ...data,
-      realtorId,
-      visitors: 0,
-      totalLeads: 0,
-    },
-  });
+for (const file of files) {
+      const uploaded = await cloudinary.uploader.upload(
+        `data:${file.mimetype};base64,${file.buffer.toString("base64")}`
+      );
+
+      imageUrls.push(uploaded.secure_url);
+    }
+
+    const property = await Property.create({
+      ...req.body,
+      images: imageUrls,
+      status: "draft",
+    });
+
+    res.status(201).json(property);
+  } catch (err) {
+    res.status(500).json({ message: "Error creating property" });
+  }
 };
 
 export const getMyProperties = async (realtorId: string) => {

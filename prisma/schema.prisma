@@ -153,3 +153,21 @@ model FeaturedLink {
   properties  Property[]
   createdAt   DateTime @default(now())
 }
+
+
+model PhoneVerification {
+  phone     String   @id
+  verified  Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+}
+
+
+enum ListingStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Listing {
+  id        String        @id @default(uuid())
+  status    ListingStatus @default(DRAFT)
+}

@@ -23,6 +23,7 @@ export interface Property {
   size: string;
   furnished: boolean;
 
+
   price: number;
   priceMode: PriceMode;
 
@@ -38,3 +39,5 @@ export interface Property {
   createdAt: Date;
 }
 
+
+export type ListingStatus = "DRAFT" | "PUBLISHED";

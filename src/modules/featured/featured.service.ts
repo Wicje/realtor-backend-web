@@ -7,6 +7,18 @@ export const createFeaturedLink = async (
   propertyIds: string[]
 ) => {
   const token = crypto.randomUUID();
+  
+  
+const ownedProperties = await prisma.property.findMany({
+  where: {
+    id: { in: propertyIds },
+    realtorId,
+  },
+});
+
+if (ownedProperties.length !== propertyIds.length) {
+  throw new Error("Some properties do not belong to you");
+}
 
   return prisma.featuredLink.create({
     data: {

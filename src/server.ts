@@ -1,20 +1,26 @@
-import { createServer } from "http";
 import { Server } from "socket.io";
-import app from "./app";
-import "./socket";
-import cors from "cors";
-import morgan from "morgan";
+import http from "http";
 
-const httpServer = createServer(app);
+const server = http.createServer(app);
 
-export const io = new Server(httpServer, {
+const io = new Server(server, {
   cors: {
     origin: "*",
   },
 });
 
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
 
+  socket.on("joinRoom", (roomId) => {
+    socket.join(roomId);
+  });
 
-httpServer.listen(5000, () => {
-  console.log("Server running on port 5000");
+  socket.on("sendMessage", (data) => {
+    io.to(data.roomId).emit("receiveMessage", data);
+  });
+});
+
+server.listen(5000, () => {
+  console.log("Server running");
 });

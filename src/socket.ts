@@ -1,6 +1,7 @@
 
 import { io } from "./server";
 import prisma from "./config/prisma";
+import jwt from "jsonwebtoken";
 
 io.use((socket, next) => {
   const token = socket.handshake.auth?.token;
@@ -11,9 +12,9 @@ io.use((socket, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    socket.data.user = decoded; // attach user info to socket
+    socket.data.user = decoded;
     next();
-  } catch (err) {
+  } catch {
     next(new Error("Unauthorized"));
   }
 });
@@ -21,9 +22,7 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
-  // Join conversation room
-socket.on("join_conversation", async (conversationId: string) => {
-
+  socket.on("join_conversation", async (conversationId: string) => {
     const user = socket.data.user;
 
     const conversation = await prisma.conversation.findUnique({
@@ -40,28 +39,24 @@ socket.on("join_conversation", async (conversationId: string) => {
       user.phone &&
       conversation.clientPhone === user.phone;
 
-    if (!isRealtor && !isClient) {
-      return; // silently ignore
-    }
+    if (!isRealtor && !isClient) return;
 
     socket.join(conversationId);
   });
-}); 
 
-// Send message
   socket.on("send_message", async (data) => {
-    const { conversationId, senderType, content } = data;
+    const { conversationId, content } = data;
 
-    // Save to DB first (always persist first)
+    const user = socket.data.user;
+
     const message = await prisma.message.create({
       data: {
         conversationId,
         content,
+        senderId: user.id, // much better than senderType
       },
     });
-    senderType,
 
-    // Broadcast to everyone in room
     io.to(conversationId).emit("receive_message", message);
   });
 
@@ -69,3 +64,4 @@ socket.on("join_conversation", async (conversationId: string) => {
     console.log("User disconnected:", socket.id);
   });
 });
+

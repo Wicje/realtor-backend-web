@@ -6,6 +6,9 @@ import leadRoutes from "./modules/leads/leads.routes";
 import analyticsRoutes from "./modules/analytics/analytics.routes";
 import otpRoutes from "./modules/otp/otp.routes";
 import messageRoutes from "./modules/message/message.route";
+import propertyRoutes from "./modules/property/property.routes";
+import featuredRoutes from "./modules/featured/featured.routes";
+import publicRoutes from "./modules/public/public.routes";
 
 // Load environment variables
 dotenv.config();
@@ -35,6 +38,9 @@ app.use("/leads", leadRoutes);
 app.use("/analytics", analyticsRoutes);
 app.use("/otp", otpRoutes);
 app.use("/message", messageRoutes);
+app.use("/property", propertyRoutes);
+app.use("featured", featuredRoutes);
+app.use("public", publicRoutes);
 
 export default app;
  

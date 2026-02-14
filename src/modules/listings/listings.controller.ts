@@ -26,3 +26,22 @@ export const myListings = async (req: Request, res: Response) => {
   res.json(listings);
 };
 
+
+
+export const publishProperty = async (req: Request, res: Response) => {
+  try {
+    const property = await Property.findById(req.params.id);
+
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    property.status = "published";
+    await property.save();
+
+    res.json({ message: "Property published" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+

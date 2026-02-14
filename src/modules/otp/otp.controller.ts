@@ -20,6 +20,14 @@ export const confirmOTP = async (req: Request, res: Response) => {
   try {
     verifyOTP(phone, code);
     res.json({ message: "Phone verified" });
+
+
+await prisma.phoneVerification.upsert({
+  where: { phone },
+  update: { verified: true },
+  create: { phone, verified: true },
+});// is this the right place
+
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
