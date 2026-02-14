@@ -23,8 +23,6 @@ export const myListings = async (req: Request, res: Response) => {
 
   const listings = await getMyProperties(user.userId);
 
-  await trackEvent("VISIT", property.realtorId, property.id); //i have to confirm if this is when it is meant to be for analytics.service
-
   res.json(listings);
 };
 

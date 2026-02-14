@@ -30,7 +30,7 @@ model User {
   role         Role
   plan         Plan
   createdAt    DateTime   @default(now())
-
+slug      String   @unique  
   properties   Property[]
 }
 

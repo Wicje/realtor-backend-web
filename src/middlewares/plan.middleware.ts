@@ -7,9 +7,13 @@ export const requirePropertyLimit = async (
   const user = (req as any).user;
   const plan = PLANS[user.plan];
 
-  const myProperties = await getMyProperties(user.userId);
+  
+const propertyCount = await prisma.property.count({
+  where: { realtorId: user.userId },
+});
 
-  if (myProperties.length >= plan.maxProperties) {
+if (propertyCount >= plan.maxProperties) 
+ {
     return res.status(403).json({
       error: "Property limit reached. Upgrade your plan.",
     });

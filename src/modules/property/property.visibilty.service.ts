@@ -6,14 +6,15 @@ export const togglePropertyVisibility = async (
   realtorId: string,
   isPublic: boolean
 ) => {
+  const property = await prisma.property.findFirst({
+    where: { id: propertyId, realtorId },
+  });
+
+  if (!property) throw new Error("Property not found or not owned by you");
+
   return prisma.property.update({
-    where: {
-      id: propertyId,
-      realtorId, // ensures ownership
-    },
-    data: {
-      isPublic,
-    },
+    where: { id: propertyId },
+    data: { isPublic },
   });
 };
 
