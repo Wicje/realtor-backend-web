@@ -1,5 +1,5 @@
-
 import { Router } from "express";
+import { requireAuth } from "../../middlewares/auth.middleware";
 import {
   startConversation,
   createMessage,
@@ -8,6 +8,7 @@ import {
 
 const router = Router();
 
+router.use(requireAuth);
 router.post("/conversation", startConversation);
 router.post("/send", createMessage);
 router.get("/:conversationId", fetchMessages);
