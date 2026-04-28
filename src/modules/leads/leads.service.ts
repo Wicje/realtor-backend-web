@@ -14,7 +14,7 @@ export const createLead = async (
     throw new Error("Property not found");
   }
 
-  return prisma.lead.create({
+  const lead = await prisma.lead.create({
     data: {
       propertyId,
       realtorId: property.realtorId,
@@ -23,9 +23,11 @@ export const createLead = async (
       isPhoneVerified: false,
     },
   });
-};
 
-await trackEvent("LEAD", property.realtorId, property.id);
+  await trackEvent("LEAD", property.realtorId, property.id);
+
+  return lead;
+};
 
 export const getLeadsForRealtor = async (realtorId: string) => {
   return prisma.lead.findMany({
