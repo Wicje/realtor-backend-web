@@ -7,9 +7,7 @@ export const signup = async (req: Request, res: Response) => {
     const data = signupSchema.parse(req.body);
     const result = await signupService(data.email, data.password);
 
-    const slug = email.split("@")[0] + "-" + Date.now(); ///this slug should be moved i think
-
-    res.status(201).json({
+    return res.status(201).json({
       message: "Realtor account created",
       token: result.token,
       user: {
@@ -18,8 +16,9 @@ export const signup = async (req: Request, res: Response) => {
         role: result.user.role,
       },
     });
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Invalid request";
+    return res.status(400).json({ error: message });
   }
 };
 
@@ -28,7 +27,7 @@ export const login = async (req: Request, res: Response) => {
     const data = loginSchema.parse(req.body);
     const result = await loginService(data.email, data.password);
 
-    res.json({
+    return res.json({
       message: "Login successful",
       token: result.token,
       user: {
@@ -37,8 +36,8 @@ export const login = async (req: Request, res: Response) => {
         role: result.user.role,
       },
     });
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Invalid request";
+    return res.status(400).json({ error: message });
   }
 };
-
