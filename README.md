@@ -33,6 +33,10 @@ Production-minded TypeScript + Express backend for realtor workflows: authentica
 
 ---
 
+## Developer Navigation Guide
+
+For day-to-day engineering onboarding and code navigation, read `DEVELOPER_README.md`.
+
 ## 1. Project Overview
 
 This service powers realtor-focused features and public discovery flows. Primary actors:

@@ -1,10 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { PrismaClient } = require("@prisma/client");
 
-const { PrismaPg } = require("@prisma/adapter-pg");
-
-import { PrismaClient } from "@prisma/client";
-
 // Prisma v7 with engine type "client" requires a DB adapter.
 // Render should provide DATABASE_URL and install @prisma/adapter-pg + pg.
 const { PrismaPg } = require("@prisma/adapter-pg");
