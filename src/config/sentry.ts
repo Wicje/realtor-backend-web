@@ -43,18 +43,14 @@ const sendSentryEvent = async (level: "error" | "fatal", message: string, extra?
   const endpoint = `${parsed.protocol}://${parsed.host}/api/${parsed.projectId}/store/`;
   const authHeader = `Sentry sentry_version=7, sentry_client=realtor-backend-web/1.0, sentry_key=${parsed.publicKey}`;
 
-  try {
-    await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Sentry-Auth": authHeader,
-      },
-      body: JSON.stringify(body),
-    });
-  } catch {
-    // Never break request handling if observability transport fails.
-  }
+  await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Sentry-Auth": authHeader,
+    },
+    body: JSON.stringify(body),
+  });
 };
 
 export const reportErrorToSentry = async (error: unknown, context?: Record<string, unknown>) => {
