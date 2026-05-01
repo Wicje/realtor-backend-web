@@ -9,6 +9,7 @@ import messageRoutes from "./modules/message/message.route";
 import propertyRoutes from "./modules/property/property.routes";
 import featuredRoutes from "./modules/featured/featured.routes";
 import publicRoutes from "./modules/public/public.routes";
+import { reportErrorToSentry } from "./config/sentry";
 
 dotenv.config();
 
@@ -35,5 +36,15 @@ app.use("/message", messageRoutes);
 app.use("/property", propertyRoutes);
 app.use("/featured", featuredRoutes);
 app.use("/public", publicRoutes);
+
+app.use(async (err: unknown, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  await reportErrorToSentry(err, {
+    path: req.path,
+    method: req.method,
+  });
+
+  const message = err instanceof Error ? err.message : "Internal server error";
+  res.status(500).json({ error: message });
+});
 
 export default app;
