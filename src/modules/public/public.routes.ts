@@ -1,6 +1,5 @@
-
 import { Router } from "express";
-import { publicRealtorPage } from "./public.controller";
+import { publicRealtorPage, publicProperty } from "./public.controller";
 
 const router = Router();
 

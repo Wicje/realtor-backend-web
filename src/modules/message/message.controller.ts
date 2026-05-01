@@ -1,36 +1,42 @@
-
+import { Request, Response } from "express";
 import {
   getOrCreateConversation,
   sendMessage,
   getMessages,
 } from "./message.service";
 
-export const startConversation = async (req, res) => {
+export const startConversation = async (req: Request, res: Response) => {
   const { propertyId, clientPhone } = req.body;
+  const user = req.user;
+
+  if (!user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
   try {
-    const convo = await getOrCreateConversation(
-      propertyId,
-      req.user.id,
-      clientPhone
-    );
-
-    res.json(convo);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+    const convo = await getOrCreateConversation(propertyId, user.userId, clientPhone);
+    return res.json(convo);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Invalid request";
+    return res.status(400).json({ error: message });
   }
 };
 
-export const createMessage = async (req, res) => {
-  const { conversationId, content, senderType } = req.body;
+export const createMessage = async (req: Request, res: Response) => {
+  const { conversationId, content, senderType, clientPhone } = req.body;
 
-  const message = await sendMessage(conversationId, senderType, content);
-  res.json(message);
+  try {
+    const message = await sendMessage(conversationId, senderType, content, clientPhone);
+    return res.json(message);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Invalid request";
+    return res.status(400).json({ error: message });
+  }
 };
 
-export const fetchMessages = async (req, res) => {
-  const { conversationId } = req.params;
+export const fetchMessages = async (req: Request, res: Response) => {
+  const conversationId = Array.isArray(req.params.conversationId) ? req.params.conversationId[0] : req.params.conversationId;
 
   const messages = await getMessages(conversationId);
-  res.json(messages);
+  return res.json(messages);
 };
