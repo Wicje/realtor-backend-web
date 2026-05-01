@@ -10,6 +10,8 @@ import propertyRoutes from "./modules/property/property.routes";
 import featuredRoutes from "./modules/featured/featured.routes";
 import publicRoutes from "./modules/public/public.routes";
 import { reportErrorToSentry } from "./config/sentry";
+import { rateLimitByIp, securityHeaders } from "./middlewares/security.middleware";
+import realtimeRoutes from "./modules/realtime/realtime.route";
 
 dotenv.config();
 
@@ -21,7 +23,9 @@ app.use((_, res, next) => {
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
-app.use(express.json());
+app.use(securityHeaders);
+app.use(rateLimitByIp(300, 60_000));
+app.use(express.json({ limit: "1mb" }));
 
 app.get("/health", (_, res) => {
   res.json({ status: "ok" });
@@ -36,6 +40,7 @@ app.use("/message", messageRoutes);
 app.use("/property", propertyRoutes);
 app.use("/featured", featuredRoutes);
 app.use("/public", publicRoutes);
+app.use("/realtime", realtimeRoutes);
 
 app.use(async (err: unknown, req: express.Request, res: express.Response, _next: express.NextFunction) => {
   await reportErrorToSentry(err, {

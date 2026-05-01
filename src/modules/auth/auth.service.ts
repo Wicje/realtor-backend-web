@@ -1,7 +1,6 @@
 import { User } from "./auth.types";
 import { hashPassword, comparePassword } from "../../utils/hash";
 import { generateToken } from "../../utils/token";
-import { randomUUID } from "crypto";
 import { prisma } from "../../config/db";
 
 
@@ -22,6 +21,7 @@ export const signupService = async (email: string, password: string) => {
       passwordHash,
       role: "REALTOR",
       plan: "FREE",
+      slug: `${email.split("@")[0]}-${Date.now()}`,
     },
   });
 
