@@ -5,12 +5,12 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -24,39 +24,46 @@ enum Plan {
 }
 
 model User {
-  id           String     @id @default(uuid())
-  email        String     @unique
-  passwordHash String
-  role         Role
-  plan         Plan
-  createdAt    DateTime   @default(now())
-slug      String   @unique  
-  properties   Property[]
+  id             String           @id @default(uuid())
+  email          String           @unique
+  passwordHash   String
+  role           Role
+  plan           Plan
+  createdAt      DateTime         @default(now())
+  slug           String           @unique
+  properties     Property[]
+  leads          Lead[]
+  analytics      AnalyticsEvent[]
+  conversations  Conversation[]
+  featuredLinks  FeaturedLink[]
 }
 
 
 model Property {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  type        PropertyType
-  size        String
-  furnished   Boolean
-  price       Int
-  priceMode   PriceMode
-  state       String
-  city        String
-  street      String
-  images      String[] // array of URLs
-  visitors    Int      @default(0)
-  totalLeads  Int      @default(0)
-  createdAt   DateTime @default(now())
-  isPublic    Boolean  @default(false)   // 👈 ADD
-  isFeatured  Boolean  @default(false)  
-  realtor     User     @relation(fields: [realtorId], references: [id])
-  realtorId   String
- visibility    PropertyVisibility[]
+  id           String               @id @default(uuid())
+  title        String
+  description  String
+  type         PropertyType
+  size         String
+  furnished    Boolean
+  price        Int
+  priceMode    PriceMode
+  state        String
+  city         String
+  street       String
+  images       String[]
+  visitors     Int                  @default(0)
+  totalLeads   Int                  @default(0)
+  createdAt    DateTime             @default(now())
+  isPublic     Boolean              @default(false)
+  isFeatured   Boolean              @default(false)
+  realtor      User                 @relation(fields: [realtorId], references: [id])
+  realtorId    String
+  visibility   PropertyVisibility[]
   featuredLinks FeaturedLink[]
+  leads        Lead[]
+  analytics    AnalyticsEvent[]
+  conversations Conversation[]
 }
 
 enum PropertyType {
@@ -123,7 +130,7 @@ model Conversation {
   createdAt    DateTime  @default(now())
 
   property     Property  @relation(fields: [propertyId], references: [id])
-  realtor      Realtor   @relation(fields: [realtorId], references: [id])
+  realtor      User      @relation(fields: [realtorId], references: [id])
   messages     Message[]
 
   @@unique([propertyId, clientPhone])

@@ -1,0 +1,12 @@
+# Keep docs append-friendly to reduce conflict pain.
+README.md merge=union
+CODEBASE_RISK_ANALYSIS.md merge=union
+
+# Always regenerate lockfiles if needed instead of manual conflict editing.
+package-lock.json merge=ours
+
+# Generated artifacts should not be merged manually.
+dist/** -merge
+src/**/*.js -merge
+src/**/*.d.ts -merge
+src/**/*.map -merge

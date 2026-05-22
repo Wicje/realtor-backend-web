@@ -1,9 +1,6 @@
-import { User } from "./auth.types";
 import { hashPassword, comparePassword } from "../../utils/hash";
 import { generateToken } from "../../utils/token";
-import { randomUUID } from "crypto";
 import { prisma } from "../../config/db";
-
 
 export const signupService = async (email: string, password: string) => {
   const existingUser = await prisma.user.findUnique({
@@ -22,6 +19,7 @@ export const signupService = async (email: string, password: string) => {
       passwordHash,
       role: "REALTOR",
       plan: "FREE",
+      slug: `${email.split("@")[0]}-${Date.now()}`,
     },
   });
 
@@ -33,7 +31,6 @@ export const signupService = async (email: string, password: string) => {
 
   return { user, token };
 };
-
 
 export const loginService = async (email: string, password: string) => {
   const user = await prisma.user.findUnique({
@@ -57,4 +54,3 @@ export const loginService = async (email: string, password: string) => {
 
   return { user, token };
 };
-

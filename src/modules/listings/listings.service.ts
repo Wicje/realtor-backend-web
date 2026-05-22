@@ -1,38 +1,29 @@
 import { prisma } from "../../config/db";
-import cloudinary from "../config/cloudinary";
 
 interface CreatePropertyInput {
   title: string;
   description: string;
-  type: any;
+  type: "SHOP" | "RESIDENTIAL" | "WAREHOUSE" | "DUPLEX" | "BUNGALOW" | "LAND";
   size: string;
   furnished: boolean;
   price: number;
-  priceMode: any;
+  priceMode: "RENT" | "LEASE" | "ONE_TIME";
   state: string;
   city: string;
   street: string;
   images: string[];
 }
 
-for (const file of files) {
-      const uploaded = await cloudinary.uploader.upload(
-        `data:${file.mimetype};base64,${file.buffer.toString("base64")}`
-      );
-
-      imageUrls.push(uploaded.secure_url);
-    }
-
-    const property = await Property.create({
-      ...req.body,
-      images: imageUrls,
-      status: "draft",
-    });
-
-    res.status(201).json(property);
-  } catch (err) {
-    res.status(500).json({ message: "Error creating property" });
-  }
+export const createProperty = async (
+  realtorId: string,
+  data: CreatePropertyInput
+) => {
+  return prisma.property.create({
+    data: {
+      ...data,
+      realtorId,
+    },
+  });
 };
 
 export const getMyProperties = async (realtorId: string) => {
@@ -47,4 +38,3 @@ export const getPropertyById = async (id: string) => {
     where: { id },
   });
 };
-

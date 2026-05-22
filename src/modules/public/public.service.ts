@@ -1,6 +1,10 @@
 
 import { prisma } from "../../config/db";
 
+
+const ALLOWED_PROPERTY_TYPES = new Set(["SHOP", "RESIDENTIAL", "WAREHOUSE", "DUPLEX", "BUNGALOW", "LAND"]);
+const ALLOWED_PRICE_MODES = new Set(["RENT", "LEASE", "ONE_TIME"]);
+
 export const getPublicRealtorPage = async (
   slug: string,
   filters: {
@@ -20,10 +24,10 @@ export const getPublicRealtorPage = async (
     where: {
       realtorId: realtor.id,
       isPublic: true,
-      ...(filters.type && { type: filters.type as any }),
-      ...(filters.priceMode && { priceMode: filters.priceMode as any }),
-      ...(filters.minPrice && { price: { gte: filters.minPrice } }),
-      ...(filters.maxPrice && { price: { lte: filters.maxPrice } }),
+      ...(filters.type && ALLOWED_PROPERTY_TYPES.has(filters.type) && { type: filters.type }),
+      ...(filters.priceMode && ALLOWED_PRICE_MODES.has(filters.priceMode) && { priceMode: filters.priceMode }),
+      ...(filters.minPrice !== undefined && { price: { gte: filters.minPrice } }),
+      ...(filters.maxPrice !== undefined && { price: { lte: filters.maxPrice } }),
     },
     orderBy: { createdAt: "desc" },
   });
