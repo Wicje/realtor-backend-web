@@ -1,5 +1,12 @@
+
 const connectionString = process.env.DATABASE_URL;
 const allowNoDbBoot = process.env.ALLOW_START_WITHOUT_DB === "true";
+
+const createPrismaClient = () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { PrismaClient } = require("@prisma/client");
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { PrismaPg } = require("@prisma/adapter-pg");
 
 const makeMissingDbProxy = () =>
   new Proxy(
@@ -12,12 +19,6 @@ const makeMissingDbProxy = () =>
       },
     }
   );
-
-const createPrismaClient = () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { PrismaClient } = require("@prisma/client");
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { PrismaPg } = require("@prisma/adapter-pg");
 
   return new PrismaClient({
     adapter: new PrismaPg({ connectionString }),
@@ -35,3 +36,5 @@ export const prisma = connectionString
     })();
 
 export const isDatabaseConfigured = Boolean(connectionString);
+
+

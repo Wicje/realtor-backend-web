@@ -26,6 +26,8 @@ export const getPublicRealtorPage = async (
       isPublic: true,
       ...(filters.type && ALLOWED_PROPERTY_TYPES.has(filters.type) && { type: filters.type }),
       ...(filters.priceMode && ALLOWED_PRICE_MODES.has(filters.priceMode) && { priceMode: filters.priceMode }),
+      ...(filters.type && { type: filters.type as any }),
+      ...(filters.priceMode && { priceMode: filters.priceMode as any }),
       ...(filters.minPrice !== undefined && { price: { gte: filters.minPrice } }),
       ...(filters.maxPrice !== undefined && { price: { lte: filters.maxPrice } }),
     },
