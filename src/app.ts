@@ -12,6 +12,7 @@ import publicRoutes from "./modules/public/public.routes";
 import { reportErrorToSentry } from "./config/sentry";
 import { rateLimitByIp, securityHeaders } from "./middlewares/security.middleware";
 import realtimeRoutes from "./modules/realtime/realtime.route";
+import { isDatabaseConfigured } from "./config/db";
 
 dotenv.config();
 
@@ -28,7 +29,10 @@ app.use(rateLimitByIp(300, 60_000));
 app.use(express.json({ limit: "1mb" }));
 
 app.get("/health", (_, res) => {
-  res.json({ status: "ok" });
+  res.json({
+    status: isDatabaseConfigured ? "ok" : "degraded",
+    database: isDatabaseConfigured ? "configured" : "missing",
+  });
 });
 
 app.use("/auth", authRoutes);
