@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { toggleVisibilty, allowAccess, removeAccess } from "./property.controller";
-import { authMiddleware } from "../../middlewares/auth.middleware";
+import { toggleVisibility, allowAccess, removeAccess } from "./property.controller";
+import { requireAuth } from "../../middlewares/auth.middleware";
 
-router.patch("/:id/visibility", authMiddleware, toggleVisibility);
+const router = Router();
 
-router.post("/:id/allow", authMiddleware, allowAccess);
+router.patch("/:id/visibility", requireAuth, toggleVisibility);
+router.post("/:id/allow", requireAuth, allowAccess);
+router.delete("/:id/allow", requireAuth, removeAccess);
 
-router.delete("/:id/allow", authMiddleware, removeAccess);
+export default router;

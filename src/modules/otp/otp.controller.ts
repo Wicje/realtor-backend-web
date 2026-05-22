@@ -1,5 +1,5 @@
-
 import { Request, Response } from "express";
+import { prisma } from "../../config/db";
 import { generateOTP, verifyOTP } from "./otp.service";
 
 export const requestOTP = async (req: Request, res: Response) => {
@@ -11,7 +11,7 @@ export const requestOTP = async (req: Request, res: Response) => {
 
   generateOTP(phone);
 
-  res.json({ message: "OTP sent" });
+  return res.json({ message: "OTP sent" });
 };
 
 export const confirmOTP = async (req: Request, res: Response) => {
@@ -19,16 +19,16 @@ export const confirmOTP = async (req: Request, res: Response) => {
 
   try {
     verifyOTP(phone, code);
-    res.json({ message: "Phone verified" });
 
+    await prisma.phoneVerification.upsert({
+      where: { phone },
+      update: { verified: true },
+      create: { phone, verified: true },
+    });
 
-await prisma.phoneVerification.upsert({
-  where: { phone },
-  update: { verified: true },
-  create: { phone, verified: true },
-});// is this the right place
-
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+    return res.json({ message: "Phone verified" });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Invalid OTP";
+    return res.status(400).json({ error: message });
   }
 };

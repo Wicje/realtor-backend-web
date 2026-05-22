@@ -1,6 +1,6 @@
+import { Request, Response, NextFunction } from "express";
 
-import multer from "multer";
-
-const storage = multer.memoryStorage();
-
-export const upload = multer({ storage });
+export const upload = {
+  array: (_field: string, _maxCount: number) =>
+    (_req: Request, _res: Response, next: NextFunction) => next(),
+};

@@ -1,26 +1,17 @@
-import { Server } from "socket.io";
-import http from "http";
+import app from "./app";
+import { isSentryConfigured, reportFatalToSentry } from "./config/sentry";
 
-const server = http.createServer(app);
+const PORT = Number(process.env.PORT ?? 5000);
 
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
+process.on("unhandledRejection", async (reason) => {
+  await reportFatalToSentry(reason, { channel: "unhandledRejection" });
 });
 
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-
-  socket.on("joinRoom", (roomId) => {
-    socket.join(roomId);
-  });
-
-  socket.on("sendMessage", (data) => {
-    io.to(data.roomId).emit("receiveMessage", data);
-  });
+process.on("uncaughtException", async (error) => {
+  await reportFatalToSentry(error, { channel: "uncaughtException" });
 });
 
-server.listen(5000, () => {
-  console.log("Server running");
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Sentry status: ${isSentryConfigured ? "configured" : "disabled"}`);
 });

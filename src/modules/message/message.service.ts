@@ -1,4 +1,3 @@
-
 import prisma from "../../config/prisma";
 
 export const getOrCreateConversation = async (
@@ -31,18 +30,23 @@ export const getOrCreateConversation = async (
 export const sendMessage = async (
   conversationId: string,
   senderType: "REALTOR" | "CLIENT",
-  content: string
-
-
-const phoneCheck = await prisma.phoneVerification.findUnique({
-  where: { phone: clientPhone },
-});
-
-if (!phoneCheck || !phoneCheck.verified) {
-  throw new Error("Phone not verified");
-}
-
+  content: string,
+  clientPhone?: string
 ) => {
+  if (senderType === "CLIENT") {
+    if (!clientPhone) {
+      throw new Error("clientPhone is required for client messages");
+    }
+
+    const phoneCheck = await prisma.phoneVerification.findUnique({
+      where: { phone: clientPhone },
+    });
+
+    if (!phoneCheck?.verified) {
+      throw new Error("Phone not verified");
+    }
+  }
+
   return prisma.message.create({
     data: {
       conversationId,
