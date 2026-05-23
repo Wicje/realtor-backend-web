@@ -1,3 +1,5 @@
+const connectionString = process.env.DATABASE_URL;
+const allowNoDbBoot = process.env.ALLOW_START_WITHOUT_DB === "true";
 
 const connectionString = process.env.DATABASE_URL;
 const allowNoDbBoot = process.env.ALLOW_START_WITHOUT_DB === "true";
