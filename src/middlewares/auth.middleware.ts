@@ -36,3 +36,4 @@ export const requireAuth = (
   }
 };
 
+export const authMiddleware = requireAuth;
