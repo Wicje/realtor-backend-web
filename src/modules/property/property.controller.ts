@@ -3,7 +3,7 @@ import {
   togglePropertyVisibility,
   allowClientAccess,
   removeClientAccess,
-} from "./property.visibilty.service";
+} from "./property.visibility.service";
 
 export const toggleVisibility = async (req: Request, res: Response) => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;

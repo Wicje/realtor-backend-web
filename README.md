@@ -169,7 +169,6 @@ Mounted route groups from `src/app.ts`:
 - `README_NAVIGATION.md` — codebase navigation and architecture map
 - `README_CONTRIBUTING.md` — contribution standards and clean code rules
 - `README_NON_TECHNICAL.md` — plain-language project overview
------=======
 
 ### Endpoint catalog
 - `POST /auth/signup` — Create realtor account.
@@ -340,7 +339,7 @@ A: Apply `requireAuth` and role/ownership middleware as needed.
 - **Analytics**: `analytics.routes.ts`, `analytics.controller.ts`, `analytics.service.ts`
 - **OTP**: `otp.routes.ts`, `otp.controller.ts`, `otp.service.ts`
 - **Message**: `message.route.ts`, `message.controller.ts`, `message.service.ts`
-- **Property**: `property.routes.ts`, `property.controller.ts`, `property.visibilty.service.ts`
+- **Property**: `property.routes.ts`, `property.controller.ts`, `property.visibility.service.ts`
 - **Featured**: `featured.routes.ts`, `featured.controller.ts`, `featured.service.ts`
 - **Public**: `public.routes.ts`, `public.controller.ts`, `public.service.ts`
 

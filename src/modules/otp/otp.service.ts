@@ -1,3 +1,5 @@
+import { randomInt, timingSafeEqual } from "crypto";
+
 const otpStore = new Map<string, { code: string; expiresAt: number }>();
 const otpRequestWindow = new Map<string, { count: number; resetAt: number }>();
 const otpVerifyWindow = new Map<string, { count: number; resetAt: number }>();
@@ -32,7 +34,7 @@ const hitWindow = (
 export const generateOTP = (phone: string) => {
   hitWindow(otpRequestWindow, phone, OTP_REQUEST_LIMIT, OTP_REQUEST_WINDOW_MS);
 
-  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const code = randomInt(100000, 999999).toString();
   const expiresAt = Date.now() + OTP_EXPIRY_MS;
 
   otpStore.set(phone, { code, expiresAt });
@@ -58,7 +60,9 @@ export const verifyOTP = (phone: string, code: string) => {
     throw new Error("OTP expired");
   }
 
-  if (entry.code !== code) {
+  const codeBuffer = Buffer.from(entry.code);
+  const inputBuffer = Buffer.from(code);
+  if (codeBuffer.length !== inputBuffer.length || !timingSafeEqual(codeBuffer, inputBuffer)) {
     throw new Error("Invalid OTP");
   }
 

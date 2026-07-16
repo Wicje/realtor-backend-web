@@ -24,10 +24,8 @@ export const getPublicRealtorPage = async (
     where: {
       realtorId: realtor.id,
       isPublic: true,
-      ...(filters.type && ALLOWED_PROPERTY_TYPES.has(filters.type) && { type: filters.type }),
-      ...(filters.priceMode && ALLOWED_PRICE_MODES.has(filters.priceMode) && { priceMode: filters.priceMode }),
-      ...(filters.type && { type: filters.type as any }),
-      ...(filters.priceMode && { priceMode: filters.priceMode as any }),
+      ...(filters.type && ALLOWED_PROPERTY_TYPES.has(filters.type) && { type: filters.type as "SHOP" | "RESIDENTIAL" | "WAREHOUSE" | "DUPLEX" | "BUNGALOW" | "LAND" }),
+      ...(filters.priceMode && ALLOWED_PRICE_MODES.has(filters.priceMode) && { priceMode: filters.priceMode as "RENT" | "LEASE" | "ONE_TIME" }),
       ...(filters.minPrice !== undefined && { price: { gte: filters.minPrice } }),
       ...(filters.maxPrice !== undefined && { price: { lte: filters.maxPrice } }),
     },

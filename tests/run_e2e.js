@@ -12,7 +12,7 @@ const fetch = fetchFn;
 async function waitForServer() {
   for (let i = 0; i < 40; i++) {
     try {
-      const r = await fetch(`${BASE}/ping`);
+      const r = await fetch(`${BASE}/health`);
       if (r.ok) return;
     } catch (e) {
       // ignore
@@ -47,7 +47,19 @@ async function main() {
   const createResp = await fetch(`${BASE}/listings`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ title: 'E2E Test', description: 'desc', price: 123 }),
+    body: JSON.stringify({
+      title: 'E2E Test Property',
+      description: 'This is a test property description for e2e testing purposes.',
+      type: 'RESIDENTIAL',
+      size: '120sqm',
+      furnished: true,
+      price: 500000,
+      priceMode: 'ONE_TIME',
+      state: 'Lagos',
+      city: 'Ikoyi',
+      street: 'Bourdillon Road',
+      images: ['https://example.com/image1.jpg'],
+    }),
   });
   const createJson = await createResp.json();
   console.log('CREATE LISTING:', createResp.status, JSON.stringify(createJson));

@@ -18,10 +18,17 @@ dotenv.config();
 
 const app = express();
 
-app.use((_, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.CORS_ORIGIN ?? "*");
+app.use((req, res, next) => {
+  const origin = process.env.CORS_ORIGIN;
+  if (!origin) {
+    throw new Error("CORS_ORIGIN environment variable is required. Set it to your frontend URL.");
+  }
+  res.header("Access-Control-Allow-Origin", origin);
   res.header("Access-Control-Allow-Methods", "GET,POST,PATCH,PUT,DELETE,OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
   next();
 });
 app.use(securityHeaders);
@@ -29,10 +36,13 @@ app.use(rateLimitByIp(300, 60_000));
 app.use(express.json({ limit: "1mb" }));
 
 app.get("/health", (_, res) => {
-  res.json({
-    status: isDatabaseConfigured ? "ok" : "degraded",
-    database: isDatabaseConfigured ? "configured" : "missing",
-  });
+  if (!isDatabaseConfigured) {
+    return res.status(503).json({
+      status: "degraded",
+      database: "missing",
+    });
+  }
+  res.json({ status: "ok", database: "configured" });
 });
 
 app.use("/auth", authRoutes);
